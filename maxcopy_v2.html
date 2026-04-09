@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MaxCopy — Turn Your Brokerage Into a Copy Trading Powerhouse</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #07091A;
+    --navy-2: #0D1230;
+    --navy-3: #141A3F;
+    --gold: #C9A84C;
+    --gold-light: #E2C97E;
+    --white: #F5F7FF;
+    --grey: #8B92B8;
+    --border: rgba(201,168,76,0.15);
+    --card-bg: rgba(255,255,255,0.03);
+    --green: #34D399;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* ── PRODUCT BAR ── */
+  .product-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 101;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 6px 60px;
+    background: var(--navy-2);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 12px;
+  }
+  .product-bar a {
+    color: var(--grey); text-decoration: none; padding: 3px 12px;
+    border-radius: 4px; font-weight: 500; transition: all 0.2s;
+  }
+  .product-bar a:hover { color: var(--white); }
+  .product-bar a.active {
+    color: var(--gold); background: rgba(201,168,76,0.1);
+    font-weight: 600;
+  }
+  .product-bar .separator { color: rgba(255,255,255,0.15); }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 30px; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 60px;
+    background: rgba(7,9,26,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.02em;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a {
+    color: var(--grey); text-decoration: none;
+    font-size: 14px; font-weight: 500; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-cta {
+    background: var(--gold); color: var(--navy);
+    padding: 10px 24px; border-radius: 6px;
+    font-size: 14px; font-weight: 600;
+    text-decoration: none; transition: background 0.2s;
+  }
+  .nav-cta:hover { background: var(--gold-light); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 160px 60px 80px;
+    position: relative; overflow: hidden;
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .hero-glow {
+    position: absolute;
+    width: 900px; height: 900px;
+    background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(201,168,76,0.1);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 6px 16px;
+    font-size: 12px; font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 28px; position: relative;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(40px, 5.5vw, 72px);
+    font-weight: 700; line-height: 1.1;
+    margin-bottom: 24px; position: relative;
+  }
+  .hero h1 span { color: var(--gold); }
+  .hero-sub {
+    font-size: 18px; color: var(--grey); line-height: 1.7;
+    max-width: 640px; margin: 0 auto 40px; position: relative;
+  }
+  .hero-ctas { display: flex; gap: 16px; justify-content: center; position: relative; }
+  .btn-primary {
+    background: var(--gold); color: var(--navy);
+    padding: 14px 32px; border-radius: 8px;
+    font-size: 15px; font-weight: 600;
+    text-decoration: none; transition: all 0.2s;
+    border: none; cursor: pointer;
+  }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border); color: var(--white);
+    padding: 14px 32px; border-radius: 8px;
+    font-size: 15px; font-weight: 500;
+    text-decoration: none; transition: all 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* Hero screenshot area */
+  .hero-screenshot {
+    margin-top: 64px;
+    position: relative;
+    max-width: 960px; width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--navy-2);
+  }
+  .hero-screenshot img {
+    width: 100%; height: auto; display: block;
+  }
+  .hero-screenshot .placeholder {
+    padding: 120px 40px;
+    text-align: center; color: var(--grey); font-size: 14px;
+  }
+  .hero-screenshot .placeholder .ph-icon { font-size: 48px; margin-bottom: 12px; }
+
+  /* ── SHARED ── */
+  section { padding: 100px 60px; max-width: 1280px; margin: 0 auto; }
+  .section-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 16px;
+  }
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(30px, 3.5vw, 48px);
+    line-height: 1.2; margin-bottom: 20px;
+  }
+  .section-sub { color: var(--grey); font-size: 17px; line-height: 1.7; max-width: 580px; }
+
+  /* ── PROBLEM ── */
+  .problem-section {
+    background: var(--navy-2); max-width: 100%; padding: 100px 0;
+  }
+  .problem-inner { max-width: 1280px; margin: 0 auto; padding: 0 60px; }
+  .problem-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 60px; align-items: start; margin-top: 48px;
+  }
+  .problem-list { list-style: none; display: flex; flex-direction: column; gap: 16px; }
+  .problem-item {
+    display: flex; gap: 16px; align-items: flex-start;
+    padding: 20px 24px;
+    background: var(--card-bg);
+    border: 1px solid var(--border); border-radius: 10px;
+  }
+  .problem-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: rgba(201,168,76,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .problem-item h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .problem-item p { font-size: 13px; color: var(--grey); line-height: 1.5; }
+  .problem-result {
+    padding: 32px;
+    background: rgba(201,168,76,0.06);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 12px;
+  }
+  .problem-result p { color: var(--grey); font-size: 15px; line-height: 1.7; }
+  .problem-result strong { color: var(--white); }
+
+  /* ── SOLUTION ── */
+  .solution-section { padding: 100px 60px; max-width: 1280px; margin: 0 auto; }
+  .ecosystem-visual {
+    display: grid; grid-template-columns: 1fr auto 1fr auto 1fr;
+    gap: 0; align-items: center; margin-top: 56px;
+  }
+  .eco-node {
+    text-align: center;
+    padding: 36px 28px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    transition: all 0.3s;
+  }
+  .eco-node:hover { border-color: rgba(201,168,76,0.4); background: rgba(201,168,76,0.04); }
+  .eco-icon { font-size: 40px; margin-bottom: 16px; }
+  .eco-node h4 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .eco-node p { font-size: 13px; color: var(--grey); line-height: 1.5; }
+  .eco-arrow {
+    color: var(--gold); font-size: 28px; text-align: center;
+    padding: 0 8px; opacity: 0.6;
+  }
+  .eco-result {
+    text-align: center; margin-top: 40px;
+    padding: 24px; font-size: 17px; color: var(--gold); font-weight: 600;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .how-section {
+    background: var(--navy-2); max-width: 100%; padding: 100px 0;
+  }
+  .how-inner { max-width: 1280px; margin: 0 auto; padding: 0 60px; }
+  .steps-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 32px; margin-top: 56px;
+  }
+  .step-card {
+    padding: 36px 32px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    position: relative;
+    transition: all 0.3s;
+  }
+  .step-card:hover { border-color: rgba(201,168,76,0.4); }
+  .step-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px; font-weight: 700;
+    color: rgba(201,168,76,0.15);
+    position: absolute; top: 20px; right: 24px;
+  }
+  .step-icon { font-size: 32px; margin-bottom: 20px; }
+  .step-card h4 { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+  .step-card p { font-size: 14px; color: var(--grey); line-height: 1.6; }
+  .how-tagline {
+    text-align: center; margin-top: 40px;
+    font-size: 16px; color: var(--gold); font-weight: 600;
+  }
+
+  /* ── DIFFERENTIATION ── */
+  .diff-section { padding: 100px 60px; max-width: 1280px; margin: 0 auto; }
+  .diff-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 24px; margin-top: 48px;
+  }
+  .diff-card {
+    padding: 32px;
+    background: linear-gradient(135deg, rgba(201,168,76,0.06), rgba(201,168,76,0.01));
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    transition: all 0.3s;
+  }
+  .diff-card:hover { border-color: rgba(201,168,76,0.4); transform: translateY(-2px); }
+  .diff-label {
+    font-size: 12px; color: var(--grey); text-transform: uppercase;
+    letter-spacing: 0.08em; margin-bottom: 8px;
+  }
+  .diff-from { font-size: 14px; color: var(--grey); margin-bottom: 12px; text-decoration: line-through; opacity: 0.6; }
+  .diff-arrow { color: var(--gold); font-size: 20px; margin-bottom: 12px; }
+  .diff-to { font-size: 18px; font-weight: 600; color: var(--white); }
+
+  /* ── BUSINESS IMPACT ── */
+  .impact-section {
+    background: var(--navy-2); max-width: 100%; padding: 100px 0;
+  }
+  .impact-inner { max-width: 1280px; margin: 0 auto; padding: 0 60px; }
+  .impact-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 48px; margin-top: 56px;
+  }
+  .impact-left { display: flex; flex-direction: column; gap: 20px; }
+  .impact-item {
+    display: flex; gap: 16px; align-items: center;
+    padding: 20px 24px;
+    background: var(--card-bg);
+    border: 1px solid var(--border); border-radius: 10px;
+    transition: all 0.2s;
+  }
+  .impact-item:hover { border-color: rgba(201,168,76,0.3); }
+  .impact-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: rgba(201,168,76,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+  }
+  .impact-item h4 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .impact-item p { font-size: 13px; color: var(--grey); }
+  .impact-right {
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .network-card {
+    padding: 32px;
+    background: rgba(201,168,76,0.04);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 14px;
+  }
+  .network-card h4 { font-size: 17px; font-weight: 600; margin-bottom: 16px; }
+  .network-badges { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+  .net-badge {
+    padding: 8px 16px;
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--grey);
+  }
+  .network-card p { font-size: 14px; color: var(--grey); line-height: 1.6; margin-top: 8px; }
+
+  /* ── CORE FEATURES ── */
+  .features-section { padding: 100px 60px; max-width: 1280px; margin: 0 auto; }
+  .features-tabs {
+    display: flex; gap: 4px;
+    background: var(--navy-2);
+    border-radius: 12px; padding: 6px;
+    margin-top: 48px; width: fit-content;
+    flex-wrap: wrap;
+  }
+  .ftab-btn {
+    padding: 10px 20px; border-radius: 8px;
+    border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 500;
+    color: var(--grey); background: transparent;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .ftab-btn.active { background: var(--gold); color: var(--navy); font-weight: 600; }
+  .ftab-content { display: none; margin-top: 48px; }
+  .ftab-content.active {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 60px; align-items: center;
+  }
+  .ftab-features { display: flex; flex-direction: column; gap: 20px; }
+  .ff-item {
+    display: flex; gap: 16px; align-items: flex-start;
+    padding: 20px; border-radius: 10px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+  }
+  .ff-item:hover { background: var(--card-bg); border-color: var(--border); }
+  .ff-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: linear-gradient(135deg, rgba(201,168,76,0.2), rgba(201,168,76,0.05));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .ff-item h4 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .ff-item p { font-size: 13px; color: var(--grey); line-height: 1.6; }
+  .ff-takeaway {
+    margin-top: 16px; padding: 16px 20px;
+    background: rgba(201,168,76,0.06);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 8px 8px 0;
+    font-size: 14px; color: var(--gold); font-weight: 500;
+  }
+  .ftab-visual {
+    background: var(--navy-2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    min-height: 400px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ftab-visual img { width: 100%; height: auto; display: block; border-radius: 12px; }
+  .ftab-visual .placeholder {
+    padding: 80px 40px; text-align: center;
+    color: var(--grey); font-size: 14px;
+  }
+  .ftab-visual .placeholder .ph-icon { font-size: 56px; margin-bottom: 12px; }
+
+  /* ── UX SECTION ── */
+  .ux-section {
+    background: var(--navy-2); max-width: 100%; padding: 100px 0;
+  }
+  .ux-inner { max-width: 1280px; margin: 0 auto; padding: 0 60px; }
+  .ux-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center; margin-top: 48px;
+  }
+  .ux-phone {
+    background: var(--navy-3);
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    padding: 8px;
+  }
+  .ux-phone img { width: 100%; height: auto; display: block; border-radius: 24px; }
+  .ux-phone .placeholder {
+    padding: 80px 40px; text-align: center;
+    color: var(--grey); font-size: 14px;
+  }
+  .ux-phone .placeholder .ph-icon { font-size: 64px; margin-bottom: 12px; }
+  .ux-features { display: flex; flex-direction: column; gap: 20px; margin-top: 32px; }
+  .ux-feat { display: flex; gap: 14px; align-items: center; }
+  .ux-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--gold); flex-shrink: 0;
+  }
+  .ux-feat span { font-size: 15px; color: var(--grey); }
+  .ux-tagline {
+    margin-top: 24px; font-size: 15px; color: var(--gold); font-weight: 600;
+  }
+
+  /* ── PRICING ── */
+  .pricing-section { padding: 100px 60px; max-width: 1280px; margin: 0 auto; }
+  .pricing-layout {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 48px; margin-top: 56px; align-items: start;
+  }
+  .pricing-range {
+    padding: 40px;
+    background: rgba(201,168,76,0.04);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 16px;
+  }
+  .pricing-range h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px; margin-bottom: 8px;
+  }
+  .pricing-range h3 span { color: var(--gold); }
+  .pricing-range .range-sub { font-size: 14px; color: var(--grey); margin-bottom: 24px; }
+  .pricing-benefits { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .pricing-benefits li {
+    font-size: 14px; color: var(--grey);
+    display: flex; gap: 10px; align-items: center;
+  }
+  .pricing-benefits li::before { content: "✓"; color: var(--gold); font-weight: 700; flex-shrink: 0; }
+  .pricing-philosophy {
+    margin-top: 24px; padding: 16px 20px;
+    background: rgba(201,168,76,0.06);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 8px 8px 0;
+    font-size: 14px; color: var(--gold); font-weight: 500; line-height: 1.5;
+  }
+
+  /* Calculator */
+  .calc-card {
+    padding: 40px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+  }
+  .calc-card h3 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+  .calc-card .calc-sub { font-size: 13px; color: var(--grey); margin-bottom: 28px; }
+  .calc-field { margin-bottom: 20px; }
+  .calc-field label {
+    display: block; font-size: 13px; font-weight: 500;
+    color: var(--grey); margin-bottom: 8px;
+  }
+  .calc-field select, .calc-field input {
+    width: 100%; padding: 12px 16px;
+    background: var(--navy-2); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--white);
+    font-family: 'DM Sans', sans-serif; font-size: 14px;
+    outline: none; transition: border 0.2s;
+    -webkit-appearance: none;
+  }
+  .calc-field select:focus, .calc-field input:focus { border-color: var(--gold); }
+  .calc-field select { cursor: pointer; }
+  .calc-result {
+    margin-top: 24px;
+    padding: 20px;
+    background: rgba(201,168,76,0.08);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 10px;
+    text-align: center;
+    display: none;
+  }
+  .calc-result .est-label { font-size: 12px; color: var(--grey); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+  .calc-result .est-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px; color: var(--gold); font-weight: 700;
+  }
+  .calc-btn {
+    width: 100%; margin-top: 12px;
+    background: var(--gold); color: var(--navy);
+    padding: 14px; border-radius: 8px; border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 600;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .calc-btn:hover { background: var(--gold-light); }
+
+  /* ── FINAL CTA ── */
+  .final-cta {
+    text-align: center; padding: 120px 60px;
+    position: relative; overflow: hidden;
+  }
+  .final-cta::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, rgba(201,168,76,0.07) 0%, transparent 70%);
+  }
+  .final-cta h2 { margin-bottom: 20px; position: relative; }
+  .final-cta p {
+    color: var(--grey); font-size: 17px; margin-bottom: 40px;
+    max-width: 520px; margin-left: auto; margin-right: auto; position: relative;
+  }
+  .final-cta .ctas { display: flex; gap: 16px; justify-content: center; position: relative; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    max-width: 1280px; margin: 0 auto;
+  }
+  footer p { font-size: 13px; color: var(--grey); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero > * { animation: fadeUp 0.7s ease both; }
+  .hero-badge { animation-delay: 0.1s; }
+  .hero h1 { animation-delay: 0.2s; }
+  .hero-sub { animation-delay: 0.3s; }
+  .hero-ctas { animation-delay: 0.4s; }
+  .hero-screenshot { animation: fadeUp 0.8s ease 0.5s both; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .hero { padding: 120px 24px 60px; }
+    .problem-grid, .impact-grid, .ux-grid, .pricing-layout,
+    .ftab-content.active { grid-template-columns: 1fr; }
+    .ecosystem-visual { grid-template-columns: 1fr; gap: 16px; }
+    .eco-arrow { transform: rotate(90deg); }
+    .steps-grid, .diff-grid { grid-template-columns: 1fr; }
+    section, .problem-inner, .how-inner, .impact-inner, .ux-inner {
+      padding-left: 24px; padding-right: 24px;
+    }
+    .features-tabs { width: 100%; }
+    .ftab-btn { font-size: 12px; padding: 8px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ PRODUCT BAR ═══ -->
+<div class="product-bar">
+  <a href="maxcore_v1.html">MaxCore</a>
+  <span class="separator">|</span>
+  <a href="maxcopy_v2.html" class="active">MaxCopy</a>
+</div>
+
+<!-- ═══ NAV ═══ -->
+<nav>
+  <div class="nav-logo">Max<span>Copy</span></div>
+  <ul class="nav-links">
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#impact">Business Impact</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+  </ul>
+  <a href="#" class="nav-cta">Book a Demo</a>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-badge">White-Label Copy Trading Platform</div>
+  <h1>Turn Your Brokerage Into a<br><span>Copy Trading Powerhouse</span></h1>
+  <p class="hero-sub">Attract investors, empower top traders, and generate recurring revenue — all from one scalable copy trading platform.</p>
+  <div class="hero-ctas">
+    <a href="#" class="btn-primary">Book a Demo</a>
+    <a href="#" class="btn-secondary">Get Custom Setup Plan</a>
+  </div>
+  <div class="hero-screenshot">
+    <img src="img/discover.png" alt="MaxCopy — Trader Discovery & Leaderboard" />
+  </div>
+</div>
+
+<!-- ═══ PROBLEM ═══ -->
+<div class="problem-section">
+  <div class="problem-inner">
+    <div class="section-label">The Problem</div>
+    <h2>Why Most Brokers Fail<br>to Retain Traders</h2>
+    <div class="problem-grid">
+      <ul class="problem-list">
+        <li class="problem-item">
+          <div class="problem-icon">📉</div>
+          <div>
+            <h4>Beginners lose money and leave</h4>
+            <p>New traders churn fast without guidance, taking their deposits with them.</p>
+          </div>
+        </li>
+        <li class="problem-item">
+          <div class="problem-icon">🏆</div>
+          <div>
+            <h4>Top traders generate value — but not revenue</h4>
+            <p>Your best performers attract attention but you have no way to monetize their edge.</p>
+          </div>
+        </li>
+        <li class="problem-item">
+          <div class="problem-icon">🔗</div>
+          <div>
+            <h4>No structured investment ecosystem</h4>
+            <p>Without a way for beginners to follow professionals, there's no network effect binding clients to your platform.</p>
+          </div>
+        </li>
+        <li class="problem-item">
+          <div class="problem-icon">🤝</div>
+          <div>
+            <h4>IB programs alone aren't enough</h4>
+            <p>Referral networks bring sign-ups but don't solve the retention and engagement gap.</p>
+          </div>
+        </li>
+      </ul>
+      <div>
+        <div class="problem-result">
+          <p>The result? <strong>Low retention, low lifetime value, and slow growth</strong> — not because of market conditions, but because your platform doesn't give clients a reason to stay and trade more.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SOLUTION ═══ -->
+<section class="solution-section">
+  <div class="section-label">The Solution</div>
+  <h2>Create a Self-Growing<br>Trading Ecosystem</h2>
+  <p class="section-sub">Copy trading transforms your brokerage into a network-driven growth engine where every participant drives revenue.</p>
+
+  <div class="ecosystem-visual">
+    <div class="eco-node">
+      <div class="eco-icon">🏆</div>
+      <h4>Professionals</h4>
+      <p>Top traders publish strategies and earn from followers.</p>
+    </div>
+    <div class="eco-arrow">→</div>
+    <div class="eco-node" style="border-color: rgba(201,168,76,0.35);">
+      <div class="eco-icon">📋</div>
+      <h4>Your Platform</h4>
+      <p>MaxCopy connects both sides and monetizes every trade.</p>
+    </div>
+    <div class="eco-arrow">→</div>
+    <div class="eco-node">
+      <div class="eco-icon">👤</div>
+      <h4>Investors</h4>
+      <p>Beginners follow professionals and stay longer.</p>
+    </div>
+  </div>
+  <div class="eco-result">Every trade becomes engagement + revenue</div>
+</section>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<div class="how-section" id="how">
+  <div class="how-inner">
+    <div class="section-label">How It Works</div>
+    <h2>Live in Three Steps</h2>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <div class="step-icon">🏅</div>
+        <h4>Top Traders Become Masters</h4>
+        <p>Your best-performing traders opt in to share their strategies publicly, creating a marketplace of proven track records.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <div class="step-icon">📊</div>
+        <h4>Investors Browse &amp; Subscribe</h4>
+        <p>Investors discover Masters through leaderboards ranked by ROI, drawdown, and win rate — then subscribe in one click.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <div class="step-icon">⚡</div>
+        <h4>Trades Copy Instantly</h4>
+        <p>Every trade is replicated in real time across accounts and platforms. Fully automated. Fully scalable.</p>
+      </div>
+    </div>
+    <div class="how-tagline">Fully automated. Fully scalable. Revenue from day one.</div>
+  </div>
+</div>
+
+<!-- ═══ DIFFERENTIATION ═══ -->
+<section class="diff-section">
+  <div class="section-label">Why MaxCopy</div>
+  <h2>More Than Copy Trading —<br>A Revenue Engine</h2>
+  <p class="section-sub">Unlike traditional platforms, MaxCopy is built to drive business outcomes, not just replicate trades.</p>
+  <div class="diff-grid">
+    <div class="diff-card">
+      <div class="diff-label">Not just</div>
+      <div class="diff-from">Trade copying</div>
+      <div class="diff-arrow">↓</div>
+      <div class="diff-to">Client Acquisition System</div>
+    </div>
+    <div class="diff-card">
+      <div class="diff-label">Not just</div>
+      <div class="diff-from">Tools</div>
+      <div class="diff-arrow">↓</div>
+      <div class="diff-to">Monetization Engine</div>
+    </div>
+    <div class="diff-card">
+      <div class="diff-label">Not just</div>
+      <div class="diff-from">Features</div>
+      <div class="diff-arrow">↓</div>
+      <div class="diff-to">Retention Strategy</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ BUSINESS IMPACT ═══ -->
+<div class="impact-section" id="impact">
+  <div class="impact-inner">
+    <div class="section-label">Business Impact</div>
+    <h2>Designed to Increase Revenue<br>at Every Level</h2>
+    <div class="impact-grid">
+      <div class="impact-left">
+        <div class="impact-item">
+          <div class="impact-icon">📈</div>
+          <div>
+            <h4>Higher trading activity → more fees</h4>
+            <p>Copy trading multiplies trade volume across your entire user base.</p>
+          </div>
+        </div>
+        <div class="impact-item">
+          <div class="impact-icon">🔄</div>
+          <div>
+            <h4>Increased retention → higher lifetime value</h4>
+            <p>Clients who follow strategies stay engaged longer and deposit more.</p>
+          </div>
+        </div>
+        <div class="impact-item">
+          <div class="impact-icon">💰</div>
+          <div>
+            <h4>More deposits → larger volumes</h4>
+            <p>A visible ecosystem of top performers attracts higher-value investors.</p>
+          </div>
+        </div>
+        <div class="impact-item">
+          <div class="impact-icon">🌐</div>
+          <div>
+            <h4>Partner + trader incentives → organic growth</h4>
+            <p>Top traders become your acquisition channel, promoting your platform to their audience.</p>
+          </div>
+        </div>
+      </div>
+      <div class="impact-right">
+        <div class="network-card">
+          <h4>One Unified Trading Network</h4>
+          <div class="network-badges">
+            <div class="net-badge">MT4</div>
+            <div class="net-badge">MT5</div>
+            <div class="net-badge">cTrader</div>
+          </div>
+          <p>Cross-server copying and a unified liquidity ecosystem eliminate fragmentation across platforms and systems.</p>
+          <p style="margin-top: 12px; color: var(--gold); font-weight: 500; font-size: 14px;">Copy trading significantly boosts trading volume and client lifetime value.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CORE FEATURES ═══ -->
+<section class="features-section" id="features">
+  <div class="section-label">Core Features</div>
+  <h2>Everything You Need to Run<br>a Copy Trading Business</h2>
+
+  <div class="features-tabs">
+    <button class="ftab-btn active" onclick="switchFeature('discovery', this)">Trader Discovery</button>
+    <button class="ftab-btn" onclick="switchFeature('execution', this)">Copy Execution</button>
+    <button class="ftab-btn" onclick="switchFeature('risk', this)">Risk Management</button>
+    <button class="ftab-btn" onclick="switchFeature('monetization', this)">Monetization</button>
+    <button class="ftab-btn" onclick="switchFeature('growth', this)">Growth Engine</button>
+    <button class="ftab-btn" onclick="switchFeature('admin', this)">Admin Panel</button>
+  </div>
+
+  <!-- Trader Discovery -->
+  <div id="ft-discovery" class="ftab-content active">
+    <div class="ftab-features">
+      <div class="ff-item">
+        <div class="ff-icon">🏆</div>
+        <div><h4>Real-time rankings</h4><p>Leaderboards ranked by ROI, drawdown, win rate, and more — updated live.</p></div>
+      </div>
+      <div class="ff-item">
+        <div class="ff-icon">📋</div>
+        <div><h4>Public track records</h4><p>Full transparency into every Master's history builds investor confidence.</p></div>
+      </div>
+      <div class="ff-item">
+        <div class="ff-icon">🔍</div>
+        <div><h4>Strategy transparency</h4><p>Investors see exactly what they're following before committing capital.</p></div>
+      </div>
+      <div class="ff-takeaway">Better decisions → higher deposits</div>
+    </div>
+    <div class="ftab-visual">
+      <img src="img/discover.png" alt="Trader Discovery & Leaderboard" />
+    </div>
+  </div>
+
+  <!-- Copy Execution -->
+  <div id="ft-execution" class="ftab-content">
+    <div class="ftab-features">
+      <div class="ff-item">
+        <div class="ff-icon">⚡</div>
+        <div><h4>Instant trade replication</h4><p>Sub-second copy execution keeps investor positions aligned with Masters.</p></div>
+      </div>
+      <div class="ff-item">
+        <div class="ff-icon">🔀</div>
+        <div><h4>Cross-platform copying</h4><p>Copy trades between MT4, MT5, and cTrader seamlessly — no fragmentation.</p></div>
+      </div>
+      <div class="ff-item">
+        <div class="ff-icon">👥</div>
+        <div><h4>Multi-account synchronization</h4><p>One Master, thousands of followers — all synchronized in real time.</p></div>
+      </div>
+      <div class="ff-takeaway">Low latency is critical for copy trading success</div>
+    </div>
+    <div class="ftab-visual">
+      <img src="img/crossplatform.png" alt="Cross-Platform Copy Execution" />
+    </div>
+  </div>
+
+  <!-- Risk Management -->
+  <div id="ft-risk" class="ftab-content">
+    <div class="ftab-features">
+      <div class="ff-item">
+        <div class="ff-icon">🎯</div>
+        <div><h4>Risk limits per strategy</h4><p>Investors set maximum exposure per Master to control downside risk.</p></div>
+      </div>
+      <div class="ff-item">
+        <div class="ff-icon">⏸️</div>
+        <div><h4>Pause / reverse copy</h4><p>Instant controls to pause or reverse any copy relationship on demand.</p></div>
+      </div>
+      <div class="ff-item">
+        <div class="ff-icon">⚙️</div>
+        <div><h4>6+ allocation methods</h4><p>Proportional, fixed lot, equity-based, and more — match any investor profile.</p></div>
+      </div>
+      <div class="ff-takeaway">Controlled risk = higher retention</div>
+    </div>
+    <div class="ftab-visual">
+      <img src="img/riskmodal.png" alt="Copy Trading Risk Management" />
+    </div>
+  </div>
+
+  <!-- Monetization -->
+  <div id="ft-monetization" class="ftab-content">
+    <div class="ftab-features">
+      <div class="ff-item">
+        <div class="ff-icon">💰</div>
+        <div><h4>Performance fees (high-water mark)</h4><p>Charge fees only on new profits — fair, transparent, and industry-standard.</p></div>
+      </div>
+      <div class="ff-item">
+        <div class="ff-icon">🔁</div>
+        <div><h4>Subscription fees</h4><p>Monthly recurring revenue from investors subscribing to Master strategies.</p></div>
+      </div>
+      <div class="ff-item">
+        <div class="ff-icon">📊</div>
+        <div><h4>Volume-based &amp; management fees</h4><p>Layer multiple fee models to maximize revenue per trade and per account.</p></div>
+      </div>
+      <div class="ff-item">
+        <div class="ff-icon">🤝</div>
+        <div><h4>Profit-sharing models</h4><p>Split earnings between broker, Master, and partners — fully configurable.</p></div>
+      </div>
+      <div class="ff-takeaway">Multiple fee models let brokers scale revenue streams</div>
+    </div>
+    <div class="ftab-visual">
+      <img src="img/profile.png" alt="Monetization — Performance Fees & Profit Sharing" />
+    </div>
+  </div>
+
+  <!-- Growth Engine -->
+  <div id="ft-growth" class="ftab-content">
+    <div class="ftab-features">
+      <div class="ff-item">
+        <div class="ff-icon">👤</div>
+        <div><h4>Public profiles</h4><p>Masters get shareable profiles that showcase performance and attract followers.</p></div>
+      </div>
+      <div class="ff-item">
+        <div class="ff-icon">📈</div>
+        <div><h4>Follower growth tools</h4><p>Built-in tools help Masters grow their audience — which grows your platform.</p></div>
+      </div>
+      <div class="ff-item">
+        <div class="ff-icon">💸</div>
+        <div><h4>Automated payouts</h4><p>Masters earn automatically when they perform — no manual settlement needed.</p></div>
+      </div>
+      <div class="ff-takeaway">Top traders become your acquisition channel</div>
+    </div>
+    <div class="ftab-visual">
+      <img src="img/mt4mt5.png" alt="Signal Plaza — Trader Growth Engine" />
+    </div>
+  </div>
+
+  <!-- Admin Panel -->
+  <div id="ft-admin" class="ftab-content">
+    <div class="ftab-features">
+      <div class="ff-item">
+        <div class="ff-icon">⚙️</div>
+        <div><h4>Configure platform rules</h4><p>Set who can become a Master, minimum track records, and approval workflows.</p></div>
+      </div>
+      <div class="ff-item">
+        <div class="ff-icon">💲</div>
+        <div><h4>Set minimum deposits</h4><p>Control entry thresholds per strategy or globally across your platform.</p></div>
+      </div>
+      <div class="ff-item">
+        <div class="ff-icon">🎛️</div>
+        <div><h4>Customize features per user</h4><p>Enable or disable capabilities per client segment to match your business model.</p></div>
+      </div>
+      <div class="ff-takeaway">Align the platform with your business model</div>
+    </div>
+    <div class="ftab-visual">
+      <div class="placeholder">
+        <div class="ph-icon">🎛️</div>
+        <p>Admin &amp; Control Panel — screenshot pending</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ UX SECTION ═══ -->
+<div class="ux-section">
+  <div class="ux-inner">
+    <div class="section-label">User Experience</div>
+    <h2>Built for Modern Traders</h2>
+    <div class="ux-grid">
+      <div style="display: flex; gap: 20px; justify-content: center; align-items: flex-start;">
+        <div class="ux-phone" style="max-width: 260px;">
+          <img src="img/mobile-discover.png" alt="Mobile — Discover Signals" />
+        </div>
+        <div class="ux-phone" style="max-width: 260px;">
+          <img src="img/mobile-profile.png" alt="Mobile — Trader Profile" />
+        </div>
+      </div>
+      <div>
+        <p style="color: var(--grey); font-size: 16px; line-height: 1.7; margin-bottom: 24px;">Your clients expect a modern, intuitive experience. MaxCopy delivers one that keeps them engaged and trading.</p>
+        <div class="ux-features">
+          <div class="ux-feat"><div class="ux-dot"></div><span>One-click subscription to any strategy</span></div>
+          <div class="ux-feat"><div class="ux-dot"></div><span>Full transparency into every Master's performance</span></div>
+          <div class="ux-feat"><div class="ux-dot"></div><span>Easy onboarding — investors copy in minutes, not hours</span></div>
+          <div class="ux-feat"><div class="ux-dot"></div><span>Native mobile experience on iOS and Android</span></div>
+        </div>
+        <div class="ux-tagline">Simple for beginners, powerful for professionals.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PRICING ═══ -->
+<section class="pricing-section" id="pricing">
+  <div class="section-label">Pricing</div>
+  <h2>Transparent Pricing,<br>Tailored to Your Scale</h2>
+  <p class="section-sub">We believe in transparent pricing — tailored to your business, not hidden behind sales calls.</p>
+
+  <div class="pricing-layout">
+    <div class="pricing-range">
+      <h3>$2,000 – <span>$10,000</span>/mo</h3>
+      <p class="range-sub">Depending on scale and configuration</p>
+      <ul class="pricing-benefits">
+        <li>Full white-label copy trading platform</li>
+        <li>MT4, MT5, and cTrader integration</li>
+        <li>Built-in monetization engine</li>
+        <li>Leaderboard &amp; trader discovery</li>
+        <li>Admin control panel</li>
+        <li>Mobile-ready experience</li>
+        <li>Dedicated onboarding support</li>
+      </ul>
+      <div class="pricing-philosophy">Builds trust. Filters serious clients. Keeps flexibility.</div>
+    </div>
+
+    <div class="calc-card">
+      <h3>Estimate Your Cost</h3>
+      <p class="calc-sub">Answer a few questions and get an instant range.</p>
+      <div class="calc-field">
+        <label>Monthly Trading Volume</label>
+        <select id="calc-volume">
+          <option value="">Select range...</option>
+          <option value="1">Under $10M</option>
+          <option value="2">$10M – $50M</option>
+          <option value="3">$50M – $200M</option>
+          <option value="4">$200M+</option>
+        </select>
+      </div>
+      <div class="calc-field">
+        <label>Number of Clients</label>
+        <select id="calc-clients">
+          <option value="">Select range...</option>
+          <option value="1">Under 500</option>
+          <option value="2">500 – 2,000</option>
+          <option value="3">2,000 – 10,000</option>
+          <option value="4">10,000+</option>
+        </select>
+      </div>
+      <div class="calc-field">
+        <label>Platforms Needed</label>
+        <select id="calc-platforms">
+          <option value="">Select...</option>
+          <option value="1">1 platform</option>
+          <option value="2">2 platforms</option>
+          <option value="3">3+ platforms</option>
+        </select>
+      </div>
+      <div class="calc-field">
+        <label>Regions</label>
+        <select id="calc-regions">
+          <option value="">Select...</option>
+          <option value="1">Single region</option>
+          <option value="2">Multi-region</option>
+          <option value="3">Global</option>
+        </select>
+      </div>
+      <button class="calc-btn" onclick="calculatePrice()">Get Estimate</button>
+      <div class="calc-result" id="calc-result">
+        <div class="est-label">Estimated Monthly Cost</div>
+        <div class="est-price" id="est-price">$3,500 – $5,000</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FINAL CTA ═══ -->
+<div class="final-cta">
+  <div class="section-label">Ready to Launch?</div>
+  <h2>Launch Your Copy Trading<br>Platform in <span style="color:var(--gold)">Weeks — Not Months</span></h2>
+  <p>Start building a scalable trading ecosystem that drives retention, increases revenue, and grows automatically.</p>
+  <div class="ctas">
+    <a href="#" class="btn-primary">Book a Demo</a>
+    <a href="#" class="btn-secondary">Get Custom Setup Plan</a>
+  </div>
+</div>
+
+<footer>
+  <div class="nav-logo">Max<span>Copy</span></div>
+  <p>© 2026 MaxCopy by Maxtech. Technology &amp; Prime of Prime Liquidity Provider.</p>
+</footer>
+
+<script>
+function switchFeature(id, btn) {
+  document.querySelectorAll('.ftab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.ftab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('ft-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function calculatePrice() {
+  const v = parseInt(document.getElementById('calc-volume').value) || 0;
+  const c = parseInt(document.getElementById('calc-clients').value) || 0;
+  const p = parseInt(document.getElementById('calc-platforms').value) || 0;
+  const r = parseInt(document.getElementById('calc-regions').value) || 0;
+
+  if (!v || !c || !p || !r) {
+    alert('Please fill in all fields to get an estimate.');
+    return;
+  }
+
+  const score = v + c + p + r;
+  let low, high;
+
+  if (score <= 5) { low = 2000; high = 3000; }
+  else if (score <= 7) { low = 3000; high = 5000; }
+  else if (score <= 10) { low = 5000; high = 7500; }
+  else { low = 7500; high = 10000; }
+
+  const fmt = n => '$' + n.toLocaleString();
+  document.getElementById('est-price').textContent = fmt(low) + ' – ' + fmt(high);
+  document.getElementById('calc-result').style.display = 'block';
+}
+</script>
+</body>
+</html>
