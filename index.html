@@ -81,6 +81,17 @@
   .card-cta::after { content: '→'; transition: transform 0.2s; }
   .card:hover .card-cta::after { transform: translateX(4px); }
 
+  .disclaimer {
+    max-width: 680px; width: 100%;
+    margin-bottom: 32px;
+    padding: 14px 20px;
+    background: rgba(201,168,76,0.06);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 10px;
+    font-size: 13px; color: var(--grey); line-height: 1.6;
+  }
+  .disclaimer em { color: var(--white); font-style: normal; font-weight: 500; }
+
   @media (max-width: 540px) {
     .cards { grid-template-columns: 1fr; }
   }
@@ -92,6 +103,8 @@
 
 <h1>Technology & Prime of Prime<br>Liquidity Provider</h1>
 <p class="sub">Select a product to explore</p>
+
+<div class="disclaimer">You're looking at an early version. Things will look, feel, and read differently by the time it's done. <em>— Anton, Product</em></div>
 
 <div class="cards">
   <a href="maxcore_v1.html" class="card">
